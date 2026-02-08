@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Will You Be Mine?</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Playfair+Display:ital,wght@1,500&display=swap');
+
+        :root {
+            --bg-top: #FF1493;
+            --bg-bot: #FF69B4;
+            --primary: #FF0000;
+            --highlight: #FFB6C1;
+            --shadow: rgba(255, 20, 147, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #FF1493 0%, #FF69B4 50%, #FFB6C1 100%);
+            font-family: 'Nunito', sans-serif;
+            color: #FFFFFF;
+            text-align: center;
+            position: relative;
+        }
+
+        /* --- The Heart Container --- */
+        .heart-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            margin-bottom: 40px;
+            filter: drop-shadow(0 10px 15px var(--shadow));
+        }
+
+        svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        /* Heart Pieces */
+        .heart-piece {
+            fill: transparent;
+            stroke: #FFD700;
+            stroke-width: 2;
+            transition: fill 0.8s ease, filter 0.8s ease;
+            cursor: pointer;
+        }
+
+        .heart-piece.filled {
+            fill: #FF0000;
+            stroke: #FF0000;
+            filter: drop-shadow(0 0 12px #FF0000);
+        }
+
+        /* Heart Pulse Animation (Final Stage) */
+        .heart-container.final-pulse {
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% {
+                transform: scale(1);
+            }
+
+            15% {
+                transform: scale(1.15);
+            }
+
+            30% {
+                transform: scale(1);
+            }
+
+            45% {
+                transform: scale(1.15);
+            }
+
+            60% {
+                transform: scale(1);
+            }
+        }
+
+        /* --- Question Container --- */
+        .question-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 450px;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+            font-weight: 500;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .question-counter {
+            font-size: 0.9rem;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Buttons --- */
+        .btn-group {
+            display: flex;
+            gap: 80px;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+            height: 60px;
+        }
+
+        button {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 50px;
+            background: white;
+            color: #FF1493;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px var(--shadow);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            z-index: 10;
+            min-width: 100px;
+        }
+
+        button:hover {
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button.yes {
+            background: linear-gradient(to right, #FF1493, #FF69B4);
+            color: white;
+        }
+
+        button.no {
+            background: #FFFFFF;
+            color: #FF1493;
+            transition: all 0.1s ease-out;
+            will-change: transform;
+        }
+
+        button.no:hover {
+            transform: scale(1.05);
+        }
+
+        /* --- Final Message --- */
+        .final-message {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #FF1493 0%, #FF69B4 50%, #FFB6C1 100%);
+            z-index: 1000;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .final-message.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .final-message h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            animation: scaleIn 0.8s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .emoji-large {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .love-message {
+            font-size: 2rem;
+            color: #FFFFFF;
+            font-weight: 700;
+            margin-top: 2rem;
+            animation: slideIn 1s ease 0.5s backwards;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .okay-message {
+            font-size: 2rem;
+            color: #FFFFFF;
+            font-weight: 700;
+            margin-top: 2rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .no-attempts {
+            font-size: 0.9rem;
+            color: #FFFFFF;
+            margin-top: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="heart-container" id="heartContainer">
+        <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Subtle full-heart background for shape reference -->
+            <path
+                d="M200,80 C160,40 100,60 90,110 C80,160 120,210 200,300 C280,210 320,160 310,110 C300,60 240,40 200,80 Z"
+                fill="rgba(255,255,255,0.06)" />
+
+            <!-- Eight small heart pieces arranged to form a larger heart -->
+            <defs>
+                <path id="smallHeart"
+                    d="M0,-12 C-7,-30 -30,-30 -30,-8 C-30,8 -12,28 0,36 C12,28 30,8 30,-8 C30,-30 7,-30 0,-12 Z" />
+            </defs>
+
+            <!-- Top row (2) -->
+            <use href="#smallHeart" class="heart-piece" id="piece-0" transform="translate(150,110) scale(1.6)" />
+            <use href="#smallHeart" class="heart-piece" id="piece-1" transform="translate(250,110) scale(1.6)" />
+
+            <!-- Middle row (3) -->
+            <use href="#smallHeart" class="heart-piece" id="piece-2" transform="translate(120,165) scale(1.5)" />
+            <use href="#smallHeart" class="heart-piece" id="piece-3" transform="translate(200,155) scale(1.7)" />
+            <use href="#smallHeart" class="heart-piece" id="piece-4" transform="translate(280,165) scale(1.5)" />
+
+            <!-- Lower row (2) -->
+            <use href="#smallHeart" class="heart-piece" id="piece-5" transform="translate(170,225) scale(1.5)" />
+            <use href="#smallHeart" class="heart-piece" id="piece-6" transform="translate(230,225) scale(1.5)" />
+
+            <!-- Bottom tip (1) -->
+            <use href="#smallHeart" class="heart-piece" id="piece-7" transform="translate(200,275) scale(1.8)" />
+        </svg>
+    </div>
+
+    <div class="question-wrapper">
+        <div class="question-counter" id="questionCounter">Question 1 of 8</div>
+        <h1 id="question">Do you like me?</h1>
+        <div class="btn-group" id="btnGroup">
+            <button class="yes" onclick="answerYes()">Yes ❤️</button>
+            <button class="no" id="noBtn" onclick="answerNo()">No</button>
+        </div>
+        <div class="no-attempts" id="noAttempts"></div>
+    </div>
+
+    <div class="final-message" id="finalMessage">
+        <div id="finalContent"></div>
+    </div>
+
+    <script>
+        const questions = [
+            "Do you like me?",
+            "Will you spend time with me?",
+            "Will you be my forever?",
+            "Will you go out on a date with me?",
+            "Will you be my partner in crime?",
+            "Will you laugh with me even on hard days?",
+            "are you sure you want to say yes to me? ",
+            "Will you trust me with your heart?",
+            "Will you marry me? 💍"
+        ];
+
+        let currentQuestion = 0;
+        let yesCount = 0;
+        let noAttempts = 0;
+        const maxNoAttempts = 3;
+
+        function updateDisplay() {
+            document.getElementById('question').textContent = questions[currentQuestion];
+            document.getElementById('questionCounter').textContent = `Question ${currentQuestion + 1} of 8`;
+
+            // Reset button position
+            const noBtn = document.getElementById('noBtn');
+            noBtn.style.position = 'relative';
+            noBtn.style.left = '0';
+            noBtn.style.top = '0';
+
+            noAttempts = 0;
+            updateNoAttempts();
+        }
+
+        function updateNoAttempts() {
+            const noAttemptsDiv = document.getElementById('noAttempts');
+            if (noAttempts > 0) {
+                noAttemptsDiv.textContent = `Dodge attempt ${noAttempts} of ${maxNoAttempts}`;
+            } else {
+                noAttemptsDiv.textContent = '';
+            }
+        }
+
+        function answerYes() {
+            // Fill the heart piece
+            const piece = document.getElementById(`piece-${yesCount}`);
+            piece.classList.add('filled');
+
+            yesCount++;
+
+            if (yesCount === 8) {
+                // All questions answered with YES
+                showFinalMessage(true);
+            } else {
+                currentQuestion++;
+                updateDisplay();
+            }
+        }
+
+        function answerNo() {
+            const noBtn = document.getElementById('noBtn');
+
+            if (noAttempts < maxNoAttempts) {
+                // Dodge the button
+                noAttempts++;
+                updateNoAttempts();
+
+                const randomX = (Math.random() - 0.5) * 400;
+                const randomY = (Math.random() - 0.5) * 400;
+
+                noBtn.style.position = 'absolute';
+                noBtn.style.left = randomX + 'px';
+                noBtn.style.top = randomY + 'px';
+                noBtn.style.zIndex = '5';
+            } else {
+                // After 3 dodges, accept the NO
+                showFinalMessage(false);
+            }
+        }
+
+        function showFinalMessage(isAllYes) {
+            const finalMessage = document.getElementById('finalMessage');
+            const finalContent = document.getElementById('finalContent');
+
+            if (isAllYes) {
+                document.getElementById('heartContainer').classList.add('final-pulse');
+                finalContent.innerHTML = `
+                    <div class="emoji-large">💕</div>
+                    <h1>I Love You!</h1>
+                    <div class="love-message">You said YES to everything!🥰</div>
+                `;
+            } else {
+                finalContent.innerHTML = `
+                    <div class="emoji-large">👍</div>
+                    <h1>Okay!</h1>
+                    <div class="okay-message">Maybe next time... 💔</div>
+                `;
+            }
+
+            finalMessage.classList.add('show');
+        }
+
+        // Initialize
+        updateDisplay();
+
+        // Make NO button dodge on mouse approach (only 3 times)
+        const noBtn = document.getElementById('noBtn');
+        let dodgeCount = 0;
+        const maxDodges = 3;
+        let lastDodgeTime = 0;
+        const dodgeCooldown = 300; // milliseconds between dodges
+
+        document.addEventListener('mousemove', (e) => {
+            const noBtnRect = noBtn.getBoundingClientRect();
+            const noBtnCenterX = noBtnRect.left + noBtnRect.width / 2;
+            const noBtnCenterY = noBtnRect.top + noBtnRect.height / 2;
+
+            // Calculate distance between mouse and button
+            const distX = e.clientX - noBtnCenterX;
+            const distY = e.clientY - noBtnCenterY;
+            const distance = Math.sqrt(distX * distX + distY * distY);
+            const now = Date.now();
+
+            // Only dodge if mouse is very close to button (50px), we haven't dodged 3 times yet, and enough time has passed
+            if (distance < 50 && dodgeCount < maxDodges && yesCount < 8 && (now - lastDodgeTime) > dodgeCooldown) {
+                dodgeCount++;
+                lastDodgeTime = now;
+                const angle = Math.atan2(distY, distX);
+                const dodgeDistance = 200;
+                const newX = Math.cos(angle) * dodgeDistance;
+                const newY = Math.sin(angle) * dodgeDistance;
+
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = (noBtnCenterX + newX) + 'px';
+                noBtn.style.top = (noBtnCenterY + newY) + 'px';
+                noBtn.style.transform = 'translate(-50%, -50%)';
+                noBtn.style.zIndex = '15';
+            }
+        });
+    </script>
+</body>
+
+</html>
