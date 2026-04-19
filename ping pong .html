@@ -81,7 +81,7 @@
 
             // Ball collision with top and bottom wall
             if (ball.y + ball.radius >= canvas.height || ball.y - ball.radius <= 0) {
-                ball.velocityY = -ball.velocityY;
+                ball.velocityY = -ball.velocityYm;
             }
 
             // Ball collision with paddles

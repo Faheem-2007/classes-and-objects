@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Module 5: Exceptions, Templates & STL</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --color-background-primary: #ffffff;
+            --color-background-secondary: #f9fafb;
+            --color-background-info: #e0f2fe;
+            --color-border-primary: #3b82f6;
+            --color-border-secondary: #e5e7eb;
+            --color-border-tertiary: #f3f4f6;
+            --color-text-primary: #111827;
+            --color-text-secondary: #4b5563;
+            --color-text-info: #0369a1;
+            --font-sans: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+            --border-radius-md: 6px;
+            --border-radius-lg: 10px;
+        }
+
+        body {
+            background: var(--color-background-secondary);
+            padding: 2rem;
+        }
+
+        .wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1rem 0
+        }
+
+        .toc {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 1.5rem
+        }
+
+        .toc-btn {
+            padding: 6px 12px;
+            border: 0.5px solid var(--color-border-secondary);
+            border-radius: var(--border-radius-md);
+            background: var(--color-background-primary);
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            font-family: var(--font-sans);
+            transition: all .15s
+        }
+
+        .toc-btn:hover,
+        .toc-btn.active {
+            background: var(--color-background-secondary);
+            color: var(--color-text-primary);
+            border-color: var(--color-border-primary)
+        }
+
+        .section {
+            display: none
+        }
+
+        .section.active {
+            display: block
+        }
+
+        .section-title {
+            font-family: var(--font-sans);
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 4px
+        }
+
+        .section-sub {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            margin-bottom: 1.25rem;
+            line-height: 1.6
+        }
+
+        .card {
+            background: var(--color-background-primary);
+            border: 0.5px solid var(--color-border-tertiary);
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-head {
+            padding: 10px 14px;
+            border-bottom: 0.5px solid var(--color-border-tertiary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .card-label {
+            font-family: var(--font-sans);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--color-text-secondary)
+        }
+
+        .card-tag {
+            font-family: var(--font-sans);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            background: var(--color-background-info);
+            color: var(--color-text-info)
+        }
+
+        .code-block {
+            padding: 14px;
+            background: var(--color-background-secondary);
+            overflow-x: auto;
+            white-space: pre;
+            color: var(--color-text-primary);
+            font-size: 12.5px;
+            line-height: 1.7;
+            font-family: var(--font-mono)
+        }
+
+        .why {
+            padding: 10px 14px;
+            font-family: var(--font-sans);
+            font-size: 12.5px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+            border-top: 0.5px solid var(--color-border-tertiary)
+        }
+
+        .why strong {
+            color: var(--color-text-primary);
+            font-weight: 500
+        }
+
+        .nav {
+            display: flex;
+            gap: 8px;
+            margin-top: 1.5rem
+        }
+
+        .nav-btn {
+            padding: 7px 16px;
+            border: 0.5px solid var(--color-border-secondary);
+            border-radius: var(--border-radius-md);
+            background: var(--color-background-primary);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 13px
+        }
+
+        .nav-btn:hover {
+            background: var(--color-background-secondary)
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrap">
+        <h2 style="font-family: var(--font-sans); margin-bottom: 1rem;">Module 5: Exceptions, Templates & STL</h2>
+        <div class="toc" id="toc"></div>
+        <div id="content"></div>
+    </div>
+
+    <script>
+        const sections = [
+            {
+                id: "exceptions", label: "Exception Handling", title: "Exception Handling (try, catch, throw)", sub: "Mechanism to handle runtime errors gracefully. Ensures program flow isn't abruptly terminated and allows for cleanup (RAII).", cards: [
+                    {
+                        label: "Basic Try-Catch & Custom Exceptions", tag: "error-handling", code: `#include <iostream>
+#include <exception>
+using namespace std;
+
+// CUSTOM EXCEPTION class
+class MyException : public exception {
+public:
+    const char* what() const throw() {
+        return "Custom Error: Value cannot be negative!";
+    }
+};
+
+double divide(double a, double b) {
+    if (b == 0) throw "Division by zero error!"; // Throwing a string literal
+    return a / b;
+}
+
+int main() {
+    try {
+        int x = -5;
+        if (x < 0) throw MyException(); // Throwing custom object
+        
+        cout << divide(10, 0) << endl;
+    } 
+    catch (const MyException& e) {
+        cout << e.what() << endl;
+    }
+    catch (const char* msg) {
+        cout << "Caught: " << msg << endl;
+    }
+    catch (...) { // CATCH-ALL handler
+        cout << "Caught an unknown exception" << endl;
+    }
+    return 0;
+}`, why: "<strong>Rethrowing:</strong> Use 'throw;' inside a catch block to pass the exception up to the next outer try-catch. <strong>Standard Exceptions:</strong> Prefer inheriting from std::exception for consistency in large projects."
+                    },
+                ]
+            },
+
+            {
+                id: "templates", label: "Templates", title: "Function and Class Templates", sub: "Enables generic programming by treating types as parameters. Reduces code duplication for different data types.", cards: [
+                    {
+                        label: "Function & Class Templates with Specialization", tag: "generic", code: `#include <iostream>
+using namespace std;
+
+// FUNCTION TEMPLATE
+template <typename T>
+T maxValue(T a, T b) {
+    return (a > b) ? a : b;
+}
+
+// CLASS TEMPLATE
+template <class T>
+class Box {
+    T data;
+public:
+    Box(T d) : data(d) {}
+    void show() { cout << "Data: " << data << endl; }
+};
+
+// TEMPLATE SPECIALIZATION for char*
+template <>
+class Box<char*> {
+public:
+    Box(char* d) { cout << "Specialized handling for strings: " << d << endl; }
+};
+
+int main() {
+    cout << maxValue(10, 20) << endl;     // Deduces int
+    cout << maxValue(3.14, 2.71) << endl; // Deduces double
+
+    Box<int> b1(100);
+    Box<char*> b2("Hello"); // Uses specialized version
+    return 0;
+}`, why: "<strong>Type Parameters:</strong> T is a placeholder replaced by the compiler at compile-time (Instantiation). <strong>Specialization:</strong> Allows you to define different behavior for a specific type (like handling pointers differently)."
+                    }
+                ]
+            },
+
+            {
+                id: "stl_containers", label: "STL Containers", title: "Standard Template Library - Containers", sub: "Pre-implemented data structures. Vectors for dynamic arrays, Lists for linked lists, Sets for unique sorted keys, and Maps for key-value pairs.", cards: [
+                    {
+                        label: "Vector, List, Set, and Map", tag: "data-structures", code: `#include <iostream>
+#include <vector>
+#include <list>
+#include <set>
+#include <map>
+
+using namespace std;
+
+int main() {
+    // VECTOR: Dynamic array (Random Access)
+    vector<int> v = {1, 2, 3};
+    v.push_back(4);
+
+    // LIST: Doubly linked list (Fast insert/delete)
+    list<int> l = {10, 20, 30};
+    l.push_front(5);
+
+    // SET: Unique elements, automatically sorted
+    set<int> s = {5, 2, 5, 1}; // Stores {1, 2, 5}
+
+    // MAP: Key-Value pairs (sorted by key)
+    map<int, string> m;
+    m[101] = "Faheem";
+    m[102] = "VIT";
+
+    cout << "Map Entry 101: " << m[101] << endl;
+    return 0;
+}`, why: "<strong>Choosing a container:</strong> Use <strong>vector</strong> by default. Use <strong>list</strong> if you need frequent middle insertions. Use <strong>set/map</strong> for searching and maintaining uniqueness/order."
+                    }
+                ]
+            },
+
+            {
+                id: "iterators_algo", label: "Iterators & Algorithms", title: "Traversing and Transforming with STL", sub: "Iterators act as a bridge between containers and algorithms. Algorithms like sort and find work across different container types.", cards: [
+                    {
+                        label: "Iterators and Standard Algorithms", tag: "functional", code: `#include <iostream>
+#include <vector>
+#include <algorithm> // Essential for STL algorithms
+
+using namespace std;
+
+int main() {
+    vector<int> nums = {40, 10, 30, 20};
+
+    // ITERATOR traversal
+    cout << "Original: ";
+    for(vector<int>::iterator it = nums.begin(); it != nums.end(); ++it) {
+        cout << *it << " ";
+    }
+
+    // ALGORITHMS
+    sort(nums.begin(), nums.end());     // Sorts 10, 20, 30, 40
+    
+    auto it = find(nums.begin(), nums.end(), 30);
+    if(it != nums.end()) cout << "\\nFound 30 at index: " << distance(nums.begin(), it);
+
+    reverse(nums.begin(), nums.end());  // 40, 30, 20, 10
+    
+    return 0;
+}`, why: "<strong>Iterators:</strong> Avoid 'out of bounds' errors and provide a uniform way to access data. <strong>Efficiency:</strong> STL algorithms are highly optimized (sort is usually a version of Introsort with O(n log n) complexity)."
+                    }
+                ]
+            }
+        ];
+
+        const toc = document.getElementById('toc');
+        const content = document.getElementById('content');
+
+        function show(i) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.toc-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('s' + i).classList.add('active');
+            toc.children[i].classList.add('active');
+        }
+
+        sections.forEach((s, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'toc-btn' + (i === 0 ? ' active' : '');
+            btn.textContent = s.label;
+            btn.onclick = () => show(i);
+            toc.appendChild(btn);
+
+            const div = document.createElement('div');
+            div.className = 'section' + (i === 0 ? ' active' : '');
+            div.id = 's' + i;
+            div.innerHTML = `<div class="section-title">${s.title}</div><div class="section-sub">${s.sub}</div>` +
+                s.cards.map(c => `<div class="card"><div class="card-head"><span class="card-label">${c.label}</span><span class="card-tag">${c.tag}</span></div><div class="code-block">${c.code.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div><div class="why">${c.why}</div></div>`).join('') +
+                `<div class="nav">${i > 0 ? '<button class="nav-btn" onclick="show(' + (i - 1) + ')">← Prev</button>' : ''}<span style="flex:1"></span>${i < sections.length - 1 ? '<button class="nav-btn" onclick="show(' + (i + 1) + ')">Next →</button>' : ''}</div>`;
+            content.appendChild(div);
+        });
+    </script>
+</body>
+
+</html>

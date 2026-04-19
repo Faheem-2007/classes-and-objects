@@ -1,0 +1,10 @@
+n=input('')
+t=int(input(''))
+a=0
+l=[]
+for i in range(len(n)):
+    a+=n[i]
+    l.append(i)
+    if (a == t):
+        print(l)
+        break
